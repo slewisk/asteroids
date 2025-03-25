@@ -1,6 +1,8 @@
 import pygame, time
 from constants import *
 from player import Player
+from asteroid import Asteroid
+from asteroidfield import AsteroidField
 
 def main():
     
@@ -16,10 +18,14 @@ def main():
         print("Screen created successfully")
     except Exception as e:
         print(f"Error creating screen: {e}")
+    pygame.display.set_caption("Asteroids")
     updatable = pygame.sprite.Group()
     drawable = pygame.sprite.Group()
-    pygame.display.set_caption("Asteroids")
+    asteroids = pygame.sprite.Group()
+    AsteroidField.containers = (updatable)
+    Asteroid.containers = (asteroids, updatable, drawable)
     Player.containers = (updatable, drawable)
+    asteroidfield = AsteroidField()
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     while True:
         for event in pygame.event.get():
@@ -30,6 +36,11 @@ def main():
         screen.fill(pygame.Color("Black"))
         for item in drawable:
             item.draw(screen)
+        for item in asteroids:
+            if player.collides_with(item):
+                print("Game over!")
+                pygame.quit()
+                return
         updatable.update(dt)
         pygame.display.flip()
         dt = clock.tick(60) / 1000
