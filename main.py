@@ -16,7 +16,10 @@ def main():
         print("Screen created successfully")
     except Exception as e:
         print(f"Error creating screen: {e}")
+    updatable = pygame.sprite.Group()
+    drawable = pygame.sprite.Group()
     pygame.display.set_caption("Asteroids")
+    Player.containers = (updatable, drawable)
     player = Player(SCREEN_WIDTH / 2, SCREEN_HEIGHT / 2)
     while True:
         for event in pygame.event.get():
@@ -25,10 +28,13 @@ def main():
                 return 
             
         screen.fill(pygame.Color("Black"))
-        player.draw(screen)
-        player.update(dt)
+        for item in drawable:
+            item.draw(screen)
+        updatable.update(dt)
         pygame.display.flip()
         dt = clock.tick(60) / 1000
+
+    
 
     
 
